@@ -10,6 +10,7 @@ const musica = new Audio('./sonidos/luna-raise-part-one.mp3')
 const botonInciarPausar = document.querySelector('#start-pause')
 
 let tiempoTranscurridoEnSegundos = 5
+let idIntervalo = null
 
 musica.loop = true 
 
@@ -67,8 +68,13 @@ function cambiarContexto(contexto) {
 }
 
 const cuentaRegresiva = ()=> {
+    iniciarPausar()
     tiempoTranscurridoEnSegundos -= 1
     console.log('Temporizador:' + tiempoTranscurridoEnSegundos)
 }
 
-botonInciarPausar.addEventListener('click')
+botonInciarPausar.addEventListener('click', cuentaRegresiva)
+
+function iniciarPausar(){
+    idIntervalo = setInterval(cuentaRegresiva, 1000)
+}
