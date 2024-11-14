@@ -6,10 +6,17 @@ const banner = document.querySelector('.app__image')
 const titulo = document.querySelector('.app__title')
 const botones = document.querySelectorAll('.app__card-button')
 const inputEnfoqueMusica = document.querySelector('#alternar-musica')
-const musica = new Audio('./sonidos/luna-raise-part-one.mp3')
 const botonInciarPausar = document.querySelector('#start-pause')
+const textoIniciarPausar = document.querySelector('#start-pause span')
+const iconoIniciarPausar = document.querySelector('.app__card-primary-butto-icon')
+const tiempoEnPantalla = document.querySelector('#timer')
 
-let tiempoTranscurridoEnSegundos = 5
+const musica = new Audio('./sonidos/luna-rise-part-one.mp3')
+const audioPlay = new Audio('./sonidos/play.wav')
+const audioPausa = new Audio('./sonidos/pause.mp3')
+const audioTiempoFinalizado = new Audio('./sonidos/beep.mp3')
+
+let tiempoTranscurridoEnSegundos = 1500
 let idIntervalo = null
 
 musica.loop = true 
@@ -69,25 +76,41 @@ function cambiarContexto(contexto) {
 
 const cuentaRegresiva = ()=> {
     if (tiempoTranscurridoEnSegundos <= 0) {
-        reiniciar()
+        audioTiempoFinalizado.play()
         alert('Tiempo finalizado')
+        reiniciar()
         return
     }
+    textoIniciarPausar.textContent = "Pausar"
+    iconoIniciarPausar.setAttribute('src', `/imagenes/pause.png`)
     tiempoTranscurridoEnSegundos -= 1
-    console.log('Temporizador:' + tiempoTranscurridoEnSegundos)
+    mostrarTiempo()
 }
 
 botonInciarPausar.addEventListener('click', iniciarPausar)
 
 function iniciarPausar(){
     if (idIntervalo) {
+        audioPausa.play()
         reiniciar()
         return
     }
+
+    audioPlay.play()
     idIntervalo = setInterval(cuentaRegresiva, 1000)
 }
 
 function reiniciar() {
     clearInterval(idIntervalo)
     idIntervalo = null
+    textoIniciarPausar.textContent = "Comenzar"
+    iconoIniciarPausar.setAttribute('src', `/imagenes/play_arrow.png`)
 }
+
+function mostrarTiempo() {
+    const tiempo = new Date(tiempoTranscurridoEnSegundos * 1000) 
+    const tiempoFormateado = tiempo.toLocaleDateString('es-MX', {minute:'2-digit', second:'2-digit'})
+    tiempoEnPantalla.innerHTML = `${tiempoFormateado}`
+}
+
+mostrarTiempo()
